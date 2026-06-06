@@ -671,22 +671,6 @@ for pid in $(ls /proc | grep -E '^[0-9]+$'); do
 done | head -50
 echo ""
 
-echo -e "$INFO 26. Fichiers ACL étendues suspectes..."
-if command -v getfacl >/dev/null 2>&1; then
-    echo -e "  $INFO ACL étendues sur /etc, /usr/bin, /home :"
-    for dir in /etc /usr/bin /home; do
-        getfacl -R "$dir" 2>/dev/null | grep -E '^# file:|^user:|^group:' | \
-        paste - - - 2>/dev/null | grep -v ':$' | while read -r file user group; do
-            if echo "$user$group" | grep -qE 'user:.*:rw|group:.*:rw'; then
-                echo -e "  $MED ACL non-standard sur : $file -> $user $group"
-            fi
-        done
-    done
-else
-    echo -e "  $MED 'getfacl' non disponible."
-fi
-echo ""
-
 echo -e "$INFO 27. Scan des fichiers de configuration sensibles accessibles en lecture..."
 for f in /etc/shadow /etc/gshadow /etc/sudoers /root/.ssh/id_rsa \
          /root/.ssh/id_ed25519 /etc/ssl/private/; do
